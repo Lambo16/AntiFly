@@ -1,0 +1,6 @@
+name: AntiFly
+version: 1.0.0
+api: [1.0.0]
+author: Lambo
+main: Lambo\AntiFly\Main
+description: AntiFly
