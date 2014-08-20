@@ -43,11 +43,18 @@ class Main extends PluginBase implements Listener{
     public function onJoin(PlayerJoinEvent $event){
         $this->players[$event->getPlayer()->getName()] = 0;
         if(isset($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()])){
-            $event->getPlayer()->kick("Banned for another ".($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["date-banned"] - (time() - $this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["time"]))." seconds.\nReason: ".$this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["reason"]."\nIf you believe this to be an error, please contact us\nat our email address admin@legionpvp.eu");
-            if(!in_array($event->getPlayer()->getName(),$this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["players"])){
-                array_push($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["players"],$event->getPlayer()->getName());
-                $this->tempbans->set("temp-bans",$this->tempbansar["temp-bans"]);
+            $c = ($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["date-banned"] - (time() - $this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["time"]));
+            if($c>0){
+                $event->getPlayer()->kick("Banned for another ".$c." seconds.\nReason: ".$this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["reason"]."\nIf you believe this to be an error, please contact us\nat our email address admin@legionpvp.eu");
+                if(!in_array($event->getPlayer()->getName(),$this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["players"])){
+                    array_push($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["players"],$event->getPlayer()->getName());
+                    $this->tempbans->set("temp-bans",$this->tempbansar["temp-bans"]);
+                    $this->tempbans->save();
+                }
+            }else{
+                $this->tempbans->remove("temp-bans",$event->getPlayer()->getAddress());
                 $this->tempbans->save();
+                $this->tempbansar = $this->tempbans->getAll();
             }
         }
     }
@@ -70,12 +77,32 @@ class Main extends PluginBase implements Listener{
                     if(!$this->playersc->exists($player->getName())) $this->playersc->set($player->getName(),0);
                     $this->players[$player->getName()] = 0;
                     $this->set($player,($this->get($player)+1));
-                    if($this->get($player) == 2){
+                    if($this->get($player) == 2 or $this->get($player) == 6 or $this->get($player) == 10){
                         $player->kick("You have been kicked for suspicious movement.");
                     }else
                     if($this->get($player) == 4){
                         $tempbans["temp-bans"][$player->getAddress()]["date-banned"] = time();
                         $tempbans["temp-bans"][$player->getAddress()]["time"] = 60 * 60;
+                        $tempbans["temp-bans"][$player->getAddress()]["reason"] = "Suspicious movement";
+                        $tempbans["temp-bans"][$player->getAddress()]["players"] = array($player->getName());
+                        $this->tempbans->set("temp-bans",$tempbans["temp-bans"]);
+                        $this->tempbans->save();
+                        $this->tempbansar = $tempbans;
+                        $player->kick("You have been banned for ".$tempbans["temp-bans"][$player->getAddress()]["time"]." seconds.\nReason: Suspicious movement\nIf you believe this to be an error, please contact us.");
+                    }else
+                    if($this->get($player) == 8){
+                        $tempbans["temp-bans"][$player->getAddress()]["date-banned"] = time();
+                        $tempbans["temp-bans"][$player->getAddress()]["time"] = 60 * 60 * 72;
+                        $tempbans["temp-bans"][$player->getAddress()]["reason"] = "Suspicious movement";
+                        $tempbans["temp-bans"][$player->getAddress()]["players"] = array($player->getName());
+                        $this->tempbans->set("temp-bans",$tempbans["temp-bans"]);
+                        $this->tempbans->save();
+                        $this->tempbansar = $tempbans;
+                        $player->kick("You have been banned for ".$tempbans["temp-bans"][$player->getAddress()]["time"]." seconds.\nReason: Suspicious movement\nIf you believe this to be an error, please contact us.");
+                    }else
+                    if($this->get($player) == 12){
+                        $tempbans["temp-bans"][$player->getAddress()]["date-banned"] = time();
+                        $tempbans["temp-bans"][$player->getAddress()]["time"] = 60 * 60 * 168;
                         $tempbans["temp-bans"][$player->getAddress()]["reason"] = "Suspicious movement";
                         $tempbans["temp-bans"][$player->getAddress()]["players"] = array($player->getName());
                         $this->tempbans->set("temp-bans",$tempbans["temp-bans"]);
