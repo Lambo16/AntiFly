@@ -26,6 +26,7 @@ class Main extends PluginBase implements Listener{
         MainLogger::getLogger()->info(TextFormat::LIGHT_PURPLE."AntiFly loaded.");
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->tempbans = new Config("tempbans.yml",Config::YAML,array("temp-bans"=>array()));
+        $this->playersc = new Config("AntiFly-players.yml", Config::YAML, array());
         $this->tempbansar = $this->tempbans->getAll();
     }
 
@@ -66,12 +67,13 @@ class Main extends PluginBase implements Listener{
                 if(!isset($this->players[$player->getName()])) $this->players[$player->getName()] = 0;
                 $this->players[$player->getName()]++;
                 if($this->players[$player->getName()] >= 90){
+                    if(!$this->playersc->exists($player->getName())) $this->playersc->set($player->getName(),0);
                     $this->players[$player->getName()] = 0;
-                    $this->set($player,"reports",($this->get($player,"reports")+1));
-                    if($this->get($player,"reports") == 2){
+                    $this->set($player,($this->get($player)+1));
+                    if($this->get($player) == 2){
                         $player->kick("You have been kicked for suspicious movement.");
                     }else
-                    if($this->get($player,"reports") == 4){
+                    if($this->get($player) == 4){
                         $tempbans["temp-bans"][$player->getAddress()]["date-banned"] = time();
                         $tempbans["temp-bans"][$player->getAddress()]["time"] = 60 * 60;
                         $tempbans["temp-bans"][$player->getAddress()]["reason"] = "Suspicious movement";
@@ -85,5 +87,15 @@ class Main extends PluginBase implements Listener{
             }else
             if($this->players[$player->getName()] > 0) $this->players[$player->getName()] = 0;
         }
+    }
+    
+    public function get(Player $player){
+        return $this->playersc->get($player->getName());
+    }
+    
+    public function set(Player $player,$v){
+        $this->playersc->set($player->getName(),$v);
+        $this->playersc->save();
+        return true;
     }
 }
