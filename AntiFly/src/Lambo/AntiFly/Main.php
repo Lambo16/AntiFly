@@ -45,7 +45,7 @@ class Main extends PluginBase implements Listener{
         if(isset($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()])){
             $c = ($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["date-banned"] - (time() - $this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["time"]));
             if($c>0){
-                $event->getPlayer()->kick("Banned for another ".$c." seconds.\nReason: ".$this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["reason"]."\nIf you believe this to be an error, please contact us\nat our email address admin@legionpvp.eu");
+                $event->getPlayer()->kick("Banned for another ".$c." seconds.\nReason: ".$this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["reason"]."\nIf you believe this to be an error, please contact us.");
                 if(!in_array($event->getPlayer()->getName(),$this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["players"])){
                     array_push($this->tempbansar["temp-bans"][$event->getPlayer()->getAddress()]["players"],$event->getPlayer()->getName());
                     $this->tempbans->set("temp-bans",$this->tempbansar["temp-bans"]);
@@ -70,7 +70,7 @@ class Main extends PluginBase implements Listener{
             $tempbans = $this->tempbansar;
             $player = $event->getEntity();
             $block = $event->getEntity()->getLevel()->getBlock(new Vector3($player->getFloorX(),$player->getFloorY()-1,$player->getFloorZ()));
-            if($block->getID() == 0){
+            if($block->getID() == 0 and !$block->getID() == 10 and !$block->getID() == 11 and !$block->getID() == 8 and !$block->getID() == 9 and !$block->getID() == 182 and !$block->getID() == 126 and !$block->getID() == 44){
                 if(!isset($this->players[$player->getName()])) $this->players[$player->getName()] = 0;
                 $this->players[$player->getName()]++;
                 if($this->players[$player->getName()] >= 90){
