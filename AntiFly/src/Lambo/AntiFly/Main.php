@@ -14,7 +14,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\level\Level;
 use pocketmine\block\Block;
 use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityMoveEvent;
+use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\Event;
 use pocketmine\event\EventPriority;
 
@@ -60,16 +60,16 @@ class Main extends PluginBase implements Listener{
     }
 
     /**
-     * @param EntityMoveEvent $event
+     * @param PlayerMoveEvent $event
      *
      * @priority HIGHEST
      * @ignoreCancelled false
      */
-    public function onMove(EntityMoveEvent $event){
-        if($event->getEntity() instanceof Player and $event->getEntity()->getGamemode() !== 1 and !$event->getEntity()->isOp()){
+    public function onMove(PlayerMoveEvent $event){
+        if($event->getPlayer() instanceof Player and $event->getPlayer()->getGamemode() !== 1 and !$event->getPlayer()->isOp()){
             $tempbans = $this->tempbansar;
-            $player = $event->getEntity();
-            $block = $event->getEntity()->getLevel()->getBlock(new Vector3($player->getFloorX(),$player->getFloorY()-1,$player->getFloorZ()));
+            $player = $event->getPlayer();
+            $block = $event->getPlayer()->getLevel()->getBlock(new Vector3($player->getFloorX(),$player->getFloorY()-1,$player->getFloorZ()));
             if($block->getID() == 0 and !$block->getID() == 10 and !$block->getID() == 11 and !$block->getID() == 8 and !$block->getID() == 9 and !$block->getID() == 182 and !$block->getID() == 126 and !$block->getID() == 44){
                 if(!isset($this->players[$player->getName()])) $this->players[$player->getName()] = 0;
                 $this->players[$player->getName()]++;
