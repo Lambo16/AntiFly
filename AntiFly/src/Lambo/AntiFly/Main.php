@@ -70,7 +70,7 @@ class Main extends PluginBase implements Listener{
             $tempbans = $this->tempbansar;
             $player = $event->getPlayer();
             $block = $event->getPlayer()->getLevel()->getBlock(new Vector3($player->getFloorX(),$player->getFloorY()-1,$player->getFloorZ()));
-            if($block->getID() == 0 and !$block->getID() == 10 and !$block->getID() == 11 and !$block->getID() == 8 and !$block->getID() == 9 and !$block->getID() == 182 and !$block->getID() == 126 and !$block->getID() == 44){
+            if($block->getID() == 0 and !$block->getID() == 10 and !$block->getID() == 11 and !$block->getID() == 8 and !$block->getID() == 9 and !$block->getID() == 182 and !$block->getID() == 171 and !$block->getID() == 126 and !$block->getID() == 44){
                 if(!isset($this->players[$player->getName()])) $this->players[$player->getName()] = 0;
                 $this->players[$player->getName()]++;
                 if($this->players[$player->getName()] >= 90){
